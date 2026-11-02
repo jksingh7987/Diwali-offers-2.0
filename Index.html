@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Diwali Offer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        /* Poster Image */
+        .poster-img {
+            width: 100%;
+            display: block;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        
+        .content-area {
+            padding: 20px;
+            text-align: center;
+            min-height: 250px;
+        }
+        .title-text {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #222;
+        }
+        .desc-text {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .btn-red, .btn-green {
+            background-color: #e32626;
+            color: white;
+            border: none;
+            padding: 12px 0;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(227, 38, 38, 0.3);
+            margin-bottom: 20px;
+        }
+        .btn-green { background-color: #25d366; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.3); }
+        .btn-red:active, .btn-green:active { transform: scale(0.98); }
+
+        /* Step 2 - Spinner */
+        .spinner-container { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #f3f3f3; border-top: 6px solid #e32626; border-right: 6px solid #25d366; border-bottom: 6px solid #0088cc; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .spinner-text { margin-top: 15px; font-size: 24px; font-weight: bold; }
+
+        /* Step 3 - Input */
+        .input-step { display: none; }
+        .input-group { display: flex; margin-top: 20px; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
+        .input-group input { flex: 1; padding: 12px; font-size: 16px; border: none; outline: none; }
+        .input-group button { background-color: #c00000; color: white; border: none; padding: 0 20px; font-weight: bold; cursor: pointer; }
+
+        /* Step 4 - Progress Bars */
+        .verification-step { display: none; }
+        .prog-box { display: flex; align-items: center; border: 1px solid #ddd; margin-bottom: 10px; padding: 10px; border-radius: 4px; }
+        .prog-text { flex: 1; text-align: left; font-size: 14px; color: #333; }
+        .prog-circle-container { display: flex; align-items: center; }
+        .prog-circle { width: 24px; height: 24px; border-radius: 50%; background: conic-gradient(#e32626 var(--p), #ddd 0deg); margin-right: 10px; }
+        .prog-percent { font-weight: bold; font-size: 14px; }
+
+        /* Step 5 - Share */
+        .share-step { display: none; text-align: left; }
+        .share-step h3 { font-size: 18px; margin-bottom: 10px; }
+        .share-step p { font-size: 14px; color: #444; margin-bottom: 10px; line-height: 1.5; }
+        .share-bar-container { border: 1px solid #333; height: 40px; position: relative; margin: 20px 0; display: flex; align-items: center; border-radius:5px; overflow:hidden;}
+        .share-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background-color: #25d366; width: 0%; transition: width 0.3s; }
+        .share-bar-text { position: absolute; width:100%; text-align:center; font-weight: bold; z-index: 1; color:#000; }
+        .share-btn { display: block; width: 100%; padding: 12px; color: white; text-align: center; font-weight: bold; text-decoration: none; border-radius: 20px; margin-bottom: 10px; border: none; font-size: 16px; cursor:pointer;}
+        .btn-wa { background-color: #25D366; }
+
+        /* Step 6 & 7 - Withdraw */
+        .withdraw-step, .pending-step { display: none; text-align: left; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
+        .withdraw-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; font-size: 14px; outline: none; }
+        .withdraw-method-tabs { display: flex; gap: 15px; margin-bottom: 15px; }
+        .radio-label { display: flex; align-items: center; gap: 5px; font-weight: bold; cursor: pointer; font-size: 15px;}
+        .pending-icon { font-size: 50px; text-align: center; display: block; margin-bottom: 10px; }
+
+        /* Comments Section */
+        .comments-section { border-top: 1px solid #ddd; padding: 15px; background: #fff; }
+        .comments-header { display: flex; justify-content: space-between; color: #65676B; font-size: 13px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .action-btns { display:flex; justify-content: space-around; padding: 10px 0; border-bottom: 1px solid #eee; margin-bottom: 15px; font-weight: bold; font-size:14px; }
+        .action-btn { cursor: pointer; color: #65676B; padding: 5px 15px; border-radius: 5px; transition: 0.2s;}
+        .action-btn:hover { background: #f0f2f5; }
+        .action-btn.liked { color: #1877F2; }
+        
+        /* Auto Scroll Comments Container */
+        .comments-window { height: 400px; overflow: hidden; position: relative; }
+        .comments-list { transition: transform 0.5s ease-in-out; }
+        
+        .comment { display: flex; margin-bottom: 15px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #ccc; margin-right: 10px; flex-shrink: 0; }
+        .comment-content { background-color: #f0f2f5; padding: 10px 12px; border-radius: 15px; flex: 1; }
+        .comment-name { font-weight: bold; font-size: 13px; margin-bottom: 2px; color: #385898; }
+        .comment-text { font-size: 14px; color: #050505; }
+        .comment-actions { font-size: 12px; color: #65676B; margin-top: 4px; margin-left: 55px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="https://ibb.co/xS60hh9j">
+        <img id="main-poster" src="https://i.ibb.co/KjWk664q/file-0000000011e0821195fb531019470938.png" alt="Diwali Poster" class="poster-img">
+    </a>
+
+    <div class="content-area">
+        <!-- Step 1: Landing -->
+        <div id="step1">
+            <div class="title-text">दिवाली मनाएँ! ₹500 से ₹1000 नकद पाएँ!</div>
+            <div class="desc-text">आप सभी को दीपावली की हार्दिक शुभकामनाएँ! सभी के लिए ₹500 - ₹1000 का नकद इनाम उपलब्ध है!</div>
+            <div style="width: 50px; height: 3px; background: red; margin: 0 auto 20px;"></div>
+            <button class="btn-red" id="btn-check">अभी देखें</button>
+        </div>
+
+        <!-- Step 2: Spinner -->
+        <div id="step2" class="spinner-container">
+            <div class="title-text">प्रोसेसिंग हो रहा है...</div>
+            <div class="spinner"></div>
+            <div class="spinner-text" id="spinner-val">0%</div>
+        </div>
+
+        <!-- Step 3: Input Mobile -->
+        <div id="step3" class="input-step">
+            <div class="desc-text" style="font-size:16px; font-weight:bold;">अभी जांचें कि क्या आप हमारे ₹500 - ₹1000 के नकद इनाम के लिए पात्र हैं।</div>
+            <div class="input-group">
+                <input type="tel" id="mobile-input" placeholder="अपना 10 अंकों का मोबाइल नंबर दर्ज करें" maxlength="10">
+                <button id="btn-submit-mobile">ज জমা करें</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Verification Progress -->
+        <div id="step4" class="verification-step">
+            <div class="desc-text" style="font-size:16px; font-weight:bold;">आपके मोबाइल नंबर की समीक्षा की जा रही है</div>
+            <div class="prog-box">
+                <div class="prog-text">कृपया पूरा होने तक प्रतीक्षा करें</div>
+                <div class="prog-circle-container">
+                    <div class="prog-circle" style="--p: 100%; background: conic-gradient(#25d366 100%, #ddd 0deg);"></div>
+                    <div class="prog-percent">100%</div>
+                </div>
+            </div>
+            <div class="prog-box">
+                <div class="prog-text">बधाई हो! आप इनाम के लिए पात्र हैं...</div>
+                <div class="prog-circle-container">
+                    <div class="prog-circle" id="verify-circle" style="--p: 0%;"></div>
+                    <div class="prog-percent" id="verify-text">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Share to Claim -->
+        <div id="step5" class="share-step">
+            <h3 style="color:#e32626;">बधाई हो! आपका नंबर मुफ्त ₹500-₹1000 नकद इनाम के लिए पात्र है।</h3>
+            <p>नकद इनाम पाने के लिए आपको <b>10 WhatsApp Group या Chat</b> में यह लिंक शेयर करना होगा।</p>
+            <p>कृपया तब तक शेयर करते रहें जब तक प्रगति (Progress) 100% न हो जाए।</p>
+            
+            <div class="share-bar-container">
+                <div class="share-bar-fill" id="share-progress-bar"></div>
+                <div class="share-bar-text" id="share-percent">0%</div>
+            </div>
+
+            <button class="share-btn btn-wa" id="btn-wa">Share on WhatsApp</button>
+        </div>
+
+        <!-- Step 6: Withdrawal Form -->
+        <div id="step6" class="withdraw-step">
+            <h3 style="color:#25d366; margin-bottom:10px;">टास्क पूरा हुआ! अपना इनाम निकालें</h3>
+            <p style="margin-bottom:15px; font-size:14px; color:#555;">कृपया पेमेंट प्राप्त करने का तरीका चुनें:</p>
+
+            <div class="withdraw-method-tabs">
+                <label class="radio-label">
+                    <input type="radio" name="pay-method" value="upi" id="radio-upi" checked> UPI ID
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="pay-method" value="bank" id="radio-bank"> Bank Details
+                </label>
+            </div>
+
+            <!-- UPI Inputs -->
+            <div id="upi-box">
+                <input type="text" id="upi-id-input" class="withdraw-input" placeholder="UPI ID दर्ज करें (ex: phonepe/paytm)">
+                <input type="number" id="upi-amount-input" class="withdraw-input" placeholder="Amount दर्ज करें (₹500 - ₹1000)">
+            </div>
+
+            <!-- Bank Details Inputs -->
+            <div id="bank-box" style="display:none;">
+                <input type="text" id="bank-name-input" class="withdraw-input" placeholder="Account Holder Name">
+                <input type="number" id="bank-acc-input" class="withdraw-input" placeholder="Account Number">
+                <input type="text" id="bank-ifsc-input" class="withdraw-input" placeholder="IFSC Code">
+                <input type="number" id="bank-amount-input" class="withdraw-input" placeholder="Amount दर्ज करें (₹500 - ₹1000)">
+            </div>
+
+            <button class="btn-green" id="btn-withdraw">Withdraw Now</button>
+        </div>
+
+        <!-- Step 7: Pending Status -->
+        <div id="step7" class="pending-step">
+            <span class="pending-icon">🕒</span>
+            <h3 style="text-align:center; color:#ff9800;">Withdrawal Pending...</h3>
+            <p style="text-align:center; margin-top:10px; font-size:15px;">
+                आपका विड्रॉल रिक्वेस्ट सफलतापूर्वक सबमिट हो गया है। सिक्योरिटी वेरिफिकेशन के कारण इसे प्रोसेस होने में <b>24 से 48 घंटे</b> का समय लग सकता है। कृपया प्रतीक्षा करें।
+            </p>
+        </div>
+    </div>
+
+    <!-- Fake Comments Section -->
+    <div class="comments-section">
+        <div class="comments-header">
+            <div>👍❤️ <span id="like-count">141</span>K</div>
+            <div>26K Likes · 15K Comments</div>
+        </div>
+        <div class="action-btns">
+            <div class="action-btn" id="like-btn">👍 Like</div>
+            <div class="action-btn" id="comment-btn">💬 Comment</div>
+        </div>
+
+        <div class="comments-window">
+            <div class="comments-list" id="comments-list">
+                <!-- Javascript will populate 15 comments here -->
+            </div>
+        </div>
+    </div>
+          </div>
+          <script>
+    // --- Step Navigation Logic ---
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
+    const step5 = document.getElementById('step5');
+    const step6 = document.getElementById('step6');
+    const step7 = document.getElementById('step7');
+
+    document.getElementById('btn-check').addEventListener('click', () => {
+        step1.style.display = 'none';
+        step2.style.display = 'flex';
+        let progress = 0;
+        const spinnerVal = document.getElementById('spinner-val');
+        const interval = setInterval(() => {
+            progress += Math.floor(Math.random() * 20) + 10;
+            if(progress >= 100) { progress = 100; clearInterval(interval); setTimeout(() => { step2.style.display = 'none'; step3.style.display = 'block'; }, 500); }
+            spinnerVal.innerText = progress + '%';
+        }, 250);
+    });
+
+    // --- Mobile Number Register Check (Local Storage) ---
+    document.getElementById('btn-submit-mobile').addEventListener('click', () => {
+        const mob = document.getElementById('mobile-input').value.trim();
+        if(mob.length !== 10 || isNaN(mob)) { alert('कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!'); return; }
+        
+        let existingNumbers = JSON.parse(localStorage.getItem('registeredNumbers')) || [];
+        if(existingNumbers.includes(mob)) {
+            alert('❌ यह नंबर पहले से ही इस ऑफर के लिए रजिस्टर हो चुका है। कृपया किसी दूसरे नए नंबर से प्रयास करें।');
+            return;
+        } else {
+            existingNumbers.push(mob);
+            localStorage.setItem('registeredNumbers', JSON.stringify(existingNumbers));
+        }
+
+        step3.style.display = 'none';
+        step4.style.display = 'block';
+
+        let vProgress = 0;
+        const vCircle = document.getElementById('verify-circle');
+        const vText = document.getElementById('verify-text');
+        
+        const vInterval = setInterval(() => {
+            vProgress += 10;
+            if(vProgress >= 100) { vProgress = 100; clearInterval(vInterval); setTimeout(() => { step4.style.display = 'none'; step5.style.display = 'block'; }, 800); }
+            vCircle.style.background = `conic-gradient(#25d366 ${vProgress}%, #ddd 0deg)`;
+            vText.innerText = vProgress + '%';
+        }, 300);
+    });
+
+    // --- Share Logic (10 Clicks) ---
+    let shareCount = 0;
+    const maxShares = 10; 
+    
+    document.getElementById('btn-wa').addEventListener('click', () => {
+        if(shareCount < maxShares) {
+            shareCount++;
+            let percent = Math.round((shareCount / maxShares) * 100);
+            document.getElementById('share-progress-bar').style.width = percent + '%';
+            document.getElementById('share-percent').innerText = percent + '%';
+            
+            // Yaha par text 500 se 1000 kar diya gaya hai. Aap "https://yourwebsite.com" ko apne link se badal lijiye.
+            const waMessage = "Mujhe laga tha fake hai 😂 par sach me ₹500 se ₹1000 mil gaye, tum log bhi try karo!\n\nhttps://yourwebsite.com";
+            
+            window.open('whatsapp://send?text=' + encodeURIComponent(waMessage), '_blank');
+
+            if(shareCount >= maxShares) {
+                setTimeout(() => {
+                    step5.style.display = 'none';
+                    step6.style.display = 'block';
+                }, 1000);
+            }
+        }
+    });
+
+    // --- Withdraw Logic Tabs Toggle ---
+    const radioUpi = document.getElementById('radio-upi');
+    const radioBank = document.getElementById('radio-bank');
+    const upiBox = document.getElementById('upi-box');
+    const bankBox = document.getElementById('bank-box');
+
+    radioUpi.addEventListener('change', () => {
+        if(radioUpi.checked) {
+            upiBox.style.display = 'block';
+            bankBox.style.display = 'none';
+        }
+    });
+
+    radioBank.addEventListener('change', () => {
+        if(radioBank.checked) {
+            bankBox.style.display = 'block';
+            upiBox.style.display = 'none';
+        }
+    });
+
+    // --- Withdraw Button Submit Validation & ADSTERRA LINK ---
+    document.getElementById('btn-withdraw').addEventListener('click', () => {
+        let isValid = false;
+
+        if (radioUpi.checked) {
+            const upiId = document.getElementById('upi-id-input').value.trim();
+            const upiAmt = document.getElementById('upi-amount-input').value.trim();
+            if(upiId === "" || upiAmt === "") {
+                alert('कृपया अपना UPI ID और Amount दर्ज करें।');
+                return;
+            }
+            isValid = true;
+        } else if (radioBank.checked) {
+            const bName = document.getElementById('bank-name-input').value.trim();
+            const bAcc = document.getElementById('bank-acc-input').value.trim();
+            const bIfsc = document.getElementById('bank-ifsc-input').value.trim();
+            const bAmt = document.getElementById('bank-amount-input').value.trim();
+            
+            if(bName === "" || bAcc === "" || bIfsc === "" || bAmt === "") {
+                alert('कृपया बैंक की सभी जानकारी और Amount सही-सही भरें।');
+                return;
+            }
+            isValid = true;
+        }
+        
+        if(isValid) {
+            document.getElementById('btn-withdraw').innerText = 'Processing...';
+            
+            // Adsterra ads link opening in new tab
+            window.open('https://uplcm.com/4/12172143', '_blank');
+
+            // Move to Pending step after 1.5 seconds on current page
+            setTimeout(() => {
+                step6.style.display = 'none';
+                step7.style.display = 'block';
+            }, 1500);
+        }
+    });
+
+    // --- Like & Comment Interactivity ---
+    const likeBtn = document.getElementById('like-btn');
+    const likeCountElem = document.getElementById('like-count');
+    let isLiked = false;
+    likeBtn.addEventListener('click', () => {
+        isLiked = !isLiked;
+        if(isLiked) {
+            likeBtn.classList.add('liked');
+            likeCountElem.innerText = '142'; 
+        } else {
+            likeBtn.classList.remove('liked');
+            likeCountElem.innerText = '141';
+        }
+    });
+    
+    document.getElementById('comment-btn').addEventListener('click', () => {
+        prompt('अपना कमेंट यहाँ लिखें:');
+        alert('कमेंट करने के लिए धन्यवाद!');
+    });
+
+    // --- Auto Scroll Comments Data ---
+    const commentsData = [
+        {name: "Pooja Tanwar", img: "5", time: "2m", text: "₹1000 mil gaye, bahut-bahut dhanyawad! 🪔"},
+        {name: "Rajesh Sukla Das", img: "11", time: "5m", text: "Pehle laga tha fake hai 😂 par sach me 500 account me aa gaye. Thanks!"},
+        {name: "Rana Faraz", img: "12", time: "8m", text: "Bhai sach me mil raha hai! Maine sabhi WhatsApp me share kar diya."},
+        {name: "Steven Steven", img: "15", time: "11m", text: "Can't believe it was this easy! Got my reward instantly."},
+        {name: "Yogesh Yadav", img: "3", time: "14m", text: "Is diwali ki khushi doguni ho gayi! 🙏"},
+        {name: "Neha Sharma", img: "1", time: "16m", text: "Withdraw kiya tha, 5 min me PhonePe me aa gaya."},
+        {name: "Rahul Verma", img: "8", time: "19m", text: "Ye offer kab tak chalega? Mujhe aur dosto ko batana hai."},
+        {name: "Sneha Patel", img: "9", time: "22m", text: "Thank you so much! Real offer hai guys try karo."},
+        {name: "Amit Kumar", img: "13", time: "25m", text: "Mere me 24 hour pending dikha raha tha, par abhi subah paisa aa gaya bank me."},
+        {name: "Riya Singh", img: "2", time: "29m", text: "Wow, best Diwali gift ever 🎁"},
+        {name: "Vikas Dubey", img: "14", time: "33m", text: "15 logo ko share karna pada thoda time laga but worth it tha."},
+        {name: "Anjali Gupta", img: "4", time: "37m", text: "Mera GPay me nahi aa raha tha, UPI id theek se dala toh turant aaya."},
+        {name: "Mohit Chawla", img: "7", time: "42m", text: "Sab log jaldi claim karlo kahin offer end na ho jaye!"},
+        {name: "Priya Das", img: "6", time: "45m", text: "Withdraw option mast hai, direct bank me credit hua."},
+        {name: "Sonu Raj", img: "10", time: "50m", text: "Bhai koi batayega 100% share hone ke baad kya karna hai? (Edit: Got it, thank you!)"}
+    ];
+
+    const commentsList = document.getElementById('comments-list');
+    
+    commentsData.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comment';
+        div.innerHTML = `
+            <div class="avatar" style="background: url('https://i.pravatar.cc/100?img=${c.img}') center/cover;"></div>
+            <div>
+                <div class="comment-content">
+                    <div class="comment-name">${c.name}</div>
+                    <div class="comment-text">${c.text}</div>
+                </div>
+                <div class="comment-actions">Like · Reply · ${c.time}</div>
+            </div>
+        `;
+        commentsList.appendChild(div);
+    });
+
+    setInterval(() => {
+        const firstComment = commentsList.firstElementChild;
+        const commentHeight = firstComment.offsetHeight + 15; 
+        
+        commentsList.style.transform = `translateY(-${commentHeight}px)`;
+        
+        setTimeout(() => {
+            commentsList.style.transition = 'none';
+            commentsList.style.transform = 'translateY(0)';
+            commentsList.appendChild(firstComment);
+            
+            setTimeout(() => {
+                commentsList.style.transition = 'transform 0.5s ease-in-out';
+            }, 50);
+        }, 500); 
+    }, 3000); 
+
+</script>
+
+</body>
+</html>
